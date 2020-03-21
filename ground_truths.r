@@ -1,4 +1,5 @@
-#
+#massimo perna
+#Consorzio LaMMA
 #
 library(imager)
 library(raster)
