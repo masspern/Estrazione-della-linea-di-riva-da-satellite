@@ -1,5 +1,5 @@
-# Estrazione-della-linea-di-riva-da-satellite
-Estrazione della linea di riva da un'immagine satellitare ad alta risoluzione (pleiades)
+# Estrazione della linea di riva da satellite
+Shoreline extraction from Pleiades images using R
 
 
 2 files:
