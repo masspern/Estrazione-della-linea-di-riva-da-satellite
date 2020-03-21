@@ -12,4 +12,5 @@ Automatic extraction of shoreline from the image using ground truths.
 
 
 Massimo Perna
+
 Consorzio LaMMA
