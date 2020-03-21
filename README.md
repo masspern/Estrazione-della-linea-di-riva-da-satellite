@@ -1,4 +1,4 @@
-# Estrazione della linea di riva da satellite
+# Shoreline semi-automatic extraction from multispectral satellite images with  R
 Shoreline extraction from Pleiades images using R
 
 
