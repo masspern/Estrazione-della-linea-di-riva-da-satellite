@@ -9,3 +9,7 @@ Use GPS points from shoreline survey to determine upper-swash-limit and beach-st
 
 2) estrazione_linea_di_riva.r
 Automatic extraction of shoreline from the image using ground truths.
+
+
+Massimo Perna
+Consorzio LaMMA
