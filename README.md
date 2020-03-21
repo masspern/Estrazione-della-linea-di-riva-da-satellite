@@ -7,7 +7,7 @@ Shoreline extraction from Pleiades images using R
 1) ground_truts.r
 Use GPS points from shoreline survey to determine upper-swash-limit and beach-step avg values of the image. 
 
-2) estrazione_linea_di_riva.r
+2) shoreline_extraction.r
 Automatic extraction of shoreline from the image using ground truths.
 
 
