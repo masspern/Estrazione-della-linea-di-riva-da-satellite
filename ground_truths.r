@@ -1,7 +1,4 @@
-#massimo perna
-#Consorzio LaMMA
-#
-library(imager)
+
 library(raster)
 require(rgdal)
 library(rgeos)
@@ -16,7 +13,10 @@ library(maptools)
 mywd = "..."
 
 #nome dell'immagine gia processata con magick
-immagine = "img_truths_jpg.jpg"
+
+#nome dell'immagine multispettrale pleiades clippata
+pleiades_clip = "...."
+
 
 #extent dell'immagine raster
 xmin = .....
@@ -31,37 +31,41 @@ url_truths = "..."
 nome_truths = "..."
 #--------------------------------------------------
 
-
-
-
 #--------------------------------------------------
-#leggo l'immagine relativa alle verità a terra in imager
+# Lavoro sull'immagine di clip per importarla in imager
 #--------------------------------------------------
-#la leggo in imager
-im <- load.image(immagine)
+setwd(mywd)
+
+# carico l'immagine pleiades clippata
+ras16b_br <- brick(pleiades_clip)
+
+#trovo i minimi e i massimi della banda di infrarosso
+minimo = minValue(ras16b_br[[4]])
+massimo = maxValue(ras16b_br[[4]])
+
+# trasformo in 8bit
+ras8b_ref <- calc(ras16b_br[[4]], fun=function(x){((x - minimo) * 255)/(massimo - minimo) + 0})
+
+#export 8b raster
+writeRaster(ras8b_ref, 'ras8b_ref.tif', datatype='INT1U', overwrite=T)
 
 
-im <- im %>% isoblur(1)
-
-m_im <- as.matrix(im)
-
-#salvo il blur  in raster
-r <- raster(xmn=xmin, xmx=xmax, ymn=ymin, ymx=ymax, crs="+init=epsg:32632", resolution=0.5)
-# N.B.:la matrice deve essere trasposta
-r_im <- setValues(r, t(m_im))
+r_im <- ras8b_ref
 #--------------------------------------------------
-#
-#
-#
+
+
+
+
 #--------------------------------------------------
 # FACCIO UNA SORTA DI SUPERVISIONATA UTILIZZANTO DELLE VERITA A TERRA
 # PRESE IN UN QUALUNUE RILIEVO GPS DELLA COSTA E LE UTILIZZO
 # FACENDO LE MEDIE DEI VALORI ALL'INTERNO DI BUFFER SUI PUNTI GPS
-# SELEZIONANDO I PUNTI MAGGIORI DI 0 COME QUELLI DI RUNUP
-# E QUELLI MINORI DI 0 COME QUELLI DI STEP 
+# SELEZIONANDO I PUNTI CON QUOTA MAGGIORE DI 0 COME QUELLI DI RUNUP
+# E QUELLICON QUOTA MINORE DI 0 COME QUELLI DI STEP 
 #--------------------------------------------------
 # carico i punti GPS ("verità a terra")
 truths <- readOGR(dsn = url_truths, layer = nome_truths)
+
 
 #faccio il buffer per estrarre i valori del raster prossimi ai punti e poi fare la media
 #va bene 50 cm altrimenti i buffer si sovrappongono
@@ -115,13 +119,14 @@ m_media_up <- mean(media_up)
 
 
 #--------------------------------------------------
-# salvo la matrice di riclassificazione che userò sulle altre immagini
-# dello stesso tipo (pleiades)
+# salvo la matrice di riclassificazione che userò nelle altre zone
+# da analizzare
 #--------------------------------------------------
 #matrice di riclassificazione
-m <- c(0, m_media_st, 0,  m_media_st, m_media_up, 1,  m_media_up, 1, 0)
+m <- c(0, m_media_st, 0,  m_media_st, m_media_up, 1,  m_media_up,255, 0)
 rclmat <- matrix(m, ncol=3, byrow=TRUE)
 
 saveRDS(rclmat, "rclmat.rds")
 #--------------------------------------------------
 
+#EOF
