@@ -2,7 +2,7 @@
 Shoreline extraction from Pleiades images using R
 
 
-2 files:
+3 files:
 
 1) ground_truts.r
 Use GPS points from shoreline survey to determine upper-swash-limit and beach-step avg values of the image. 
